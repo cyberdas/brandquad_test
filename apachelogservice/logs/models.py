@@ -3,19 +3,32 @@ from django.db import models
 # Поля модели должны содержать минимум: IP адрес, Дата из лога, http метод (GET, POST,...), 
 # URI запроса, Код ответов, Размер ответа. Другие данные из лога - опциональны.
 class Log(models.Model):
-
-    ip_adress = models.GenericIPAddressField("Request IP adress")
-    #date
-    #http_method
-    #request_uri
-    #response_status_code
-    #content_legth
-    # user_agent
-    # refer
+    class HttpMethods(models.TextChoices):
+        GET = 'GET'
+        POST = 'POST'
+        PUT = 'PUT'
+        PATCH = 'PATCH'
+        DELETE = 'DELETE'
+        HEAD = 'HEAD'
+        OPTIONS = 'OPTIONS'
+        CONNECT = 'CONNECT'
+        TRACE = 'TRACE'
+        DEFAULT = 'DEFAULT'
+    ip_address = models.GenericIPAddressField('IP адрес запроса') #
+    timestamp = models.DateTimeField('Дата и время запроса') #
+    http_method = models.CharField(
+        'HTTP Метод', max_length=7, choices=HttpMethods.choices, 
+        default=HttpMethods.DEFAULT) #
+    request_path = models.CharField('Адрес запроса', max_length=200)
+    response_status_code = models.PositiveIntegerField('Статус ответа сервера') #
+    content_length = models.PositiveIntegerField('Размер объекта') #
+    referer = models.URLField('URL исходной страницы') 
+    user_agent = models.TextField('Клиентское приложение', max_length=300)
 
     class Meta:
         verbose_name = 'Лог'
         verbose_name_plural = 'Логи'
 
     def __str__(self):
-        pass
+        return f'{self.ip_address} [{self.timestamp}] ' \
+               f'"{self.http_method} {self.request_path}" {self.response_status_code} {self.content_length}'

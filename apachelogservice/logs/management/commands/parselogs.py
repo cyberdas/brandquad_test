@@ -17,7 +17,6 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument('url', type=str,  help='url with logs')
-        # ignore errors?
 
     def handle(self, *args, **options):
         passed_url = options.get('url')
