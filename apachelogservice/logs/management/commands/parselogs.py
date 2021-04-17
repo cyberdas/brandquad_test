@@ -7,9 +7,13 @@ from . import GivenUrlValidator, DownloadFile
 # WARNING is yellow
 #nargs=количество аргументов
 class Command(BaseCommand):
+    """
+    Management command for downloading, parsing and saving logs to db
+    python manage.py parselogs --help
+    """
 
     help = ('this command allows you to download logs from url, parse them and save to database, '
-            'all log files are located /apachelogservice/logs/log_dir')
+            'all log files are located at /apachelogservice/logs/log_dir')
 
     def add_arguments(self, parser):
         parser.add_argument('url', type=str,  help='url with logs')
@@ -21,8 +25,8 @@ class Command(BaseCommand):
         validator(passed_url)
         downloader = DownloadFile()
         file_path, time = downloader(passed_url)
-        self.stdout.write(self.style.SUCCESS(f'\nFile Downloaded Successfully, location:{file_path} \n'))
-        self.stdout.write(self.style.SUCCESS(f'It took {time} time'))
+        self.stdout.write(self.style.SUCCESS(f'\nFile Downloaded Successfully, location: {file_path} \n'))
+        self.stdout.write(self.style.SUCCESS(f'It took {time} seconds'))
         #try:
        #     d = DownLoadFile(url)  # скачиваем файл и сохраняем, название файла содержит текущую дату для избегания повторения
        # except:
