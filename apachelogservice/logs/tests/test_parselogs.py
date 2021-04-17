@@ -5,4 +5,6 @@ class LogParseTest(TestCase):
 
     @classmethod
     def setUpclass(cls):
-        pass
+        super().setUpClass()
+        pass # create url
+        # test wrong url, test save_to_db, test_save_file

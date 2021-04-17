@@ -17,8 +17,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         passed_url = options.get('url')
-        # self.stdout.write(self.style.WARNING("123"))
-        validator = GivenUrlValidator() # класс ответственный за валидацию
+        validator = GivenUrlValidator()
         validator(passed_url)
         downloader = DownloadFile()
         file_path, time = downloader(passed_url)

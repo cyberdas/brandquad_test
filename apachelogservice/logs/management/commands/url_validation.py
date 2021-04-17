@@ -5,7 +5,9 @@ from django.core.management.base import BaseCommand, CommandError
 
 
 class GivenUrlValidator:
-
+    """
+    Класс ответственный за валидацию переданного параметра url
+    """
     def __call__(self, passed_url: str) -> str:
         validator = URLValidator()
         try:

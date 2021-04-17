@@ -5,9 +5,6 @@ import wget
 from urllib.error import HTTPError
 
 from django.core.management.base import CommandError
-# дойдем до директории с логами
-# получим имя файла по урлу, если он есть в директории, сгенериум новое имя файла
-# имя файла используем c with open
 
 
 class DownloadFile:
@@ -15,11 +12,11 @@ class DownloadFile:
     Класс для скачивания и создания log файла в директорию /logs_dir
     """
     def __init__(self):  #apachelogservice/
-        self.save_path = os.path.join(os.getcwd(), 'logs/logs_dir')
+        self.save_path = os.path.join(os.getcwd(), 'logs', 'logs_dir')
 
     def generate_file_path(self, filename: str, file_path: str) -> str:
         """
-        Если файл с таким названием существуем - добавляем цифру в конец названия
+        Если файл с таким названием существует - добавляем цифру в конец названия
         """
         new_file_path = file_path
         root, ext = os.path.splitext(filename)
@@ -31,25 +28,35 @@ class DownloadFile:
         return new_file_path
 
     def get_file_path(self, url: str):
-        filename = url.split('/')[-1] # получаем имя файла из url
+        """
+        Получаем имя файла и путь
+        """
+        filename = url.split('/')[-1]
         file_path = os.path.join(self.save_path, filename)
         if os.path.exists(file_path):
             file_path = self.generate_file_path(filename, file_path)
         return file_path
 
     def download_file(self, url: str, file_path: str):
+        """
+        Скачиваем файл и удаляем temp файл при ошибке
+        """
         start_time = time.time()
         try:
             wget.download(url, out=file_path)
         except HTTPError:
             raise CommandError('HTTP Error 404: Not Found')
-        # если файл с поменткой .tmp - удалить
+        except OSError as e:
+            raise CommandError(f'Something went wrong, cant download log from url - {e}')
+        finally:  # сталкивался с тем, что wget после работы оставлял .tmp file
+            for item in os.listdir(self.save_path):
+                if item.endswith(".tmp"):
+                    os.remove(os.path.join(self.save_path, item))
         end_time = time.time() - start_time
         return end_time
 
     def __call__(self, url: str):
         file_path = self.get_file_path(url)
-        # print(file_path)
         time = self.download_file(url, file_path)
         return file_path, time
 
