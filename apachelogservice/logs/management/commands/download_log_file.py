@@ -64,6 +64,3 @@ class DownloadFile:
 if __name__ == "__main__":
     a = DownloadFile()
     a('http://www.almhuette-raith.at/apache-log/access.log')
-# http://www.almhuette-raith.at/apache-log/access.log D:\\Dev\\brandquad_test\\apachelogservice/logs/logs_dir\\access.log
-# https://www.youtube.com/watch?v=3ndEeGDVqD4 'D:\\Dev\\brandquad_test\\apachelogservice/logs/logs_dir\\watch?v=3ndEeGDVqD4'
-# https://docs.python.org/3/library/shutil.html
