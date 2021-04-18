@@ -1,11 +1,12 @@
+import os
+
 from django.core.exceptions import ValidationError
 from django.core.validators import URLValidator
 from django.core.management.base import BaseCommand, CommandError
 
-from . import GivenUrlValidator, DownloadFile
-# self.style.SUCCESS, WARNING, ERROR
-# WARNING is yellow
-#nargs=количество аргументов
+from . import GivenUrlValidator, DownloadFile, ApacheLogParser
+
+
 class Command(BaseCommand):
     """
     Management command for downloading, parsing and saving logs to db
@@ -17,6 +18,7 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument('url', type=str,  help='url with logs')
+        parser.add_argument('--delete', action='store_true', help='delete log file after loading')
 
     def handle(self, *args, **options):
         passed_url = options.get('url')
@@ -26,6 +28,16 @@ class Command(BaseCommand):
         file_path, time = downloader(passed_url)
         self.stdout.write(self.style.SUCCESS(f'\nFile Downloaded Successfully, location: {file_path} \n'))
         self.stdout.write(self.style.SUCCESS(f'It took {time} seconds'))
+        parser = ApacheLogParser()
+        parser.parse_all(file_path)
+        # logs saved to db
+        if options.get('delete'):
+            os.remove(file_path)
+            self.stdout.write(self.style.SUCCESS('Deleted log file'))
+        #parser = ApacheLogParser()
+        #parser.parse_all('D:\Dev\brandquad_test\apachelogservice\logs\logs_dir\access_4.log')
+        #parser.parse_all(file_path)
+        #self.stdout.write(self.style.SUCCESS(f'File {filepath} successfully parsed and saved to db')) 
         #try:
        #     d = DownLoadFile(url)  # скачиваем файл и сохраняем, название файла содержит текущую дату для избегания повторения
        # except:

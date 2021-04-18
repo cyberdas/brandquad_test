@@ -2,16 +2,21 @@ import os
 import requests
 import time
 import wget
+
+from logging import getLogger
 from urllib.error import HTTPError
 
 from django.core.management.base import CommandError
+
+
+logger = getLogger(__name__)
 
 
 class DownloadFile:
     """
     Класс для скачивания и создания log файла в директорию /logs_dir
     """
-    def __init__(self):  #apachelogservice/
+    def __init__(self):
         self.save_path = os.path.join(os.getcwd(), 'logs', 'logs_dir')
 
     def generate_file_path(self, filename: str, file_path: str) -> str:
@@ -42,6 +47,7 @@ class DownloadFile:
         Скачиваем файл и удаляем temp файл при ошибке
         """
         start_time = time.time()
+        logger.info("Downloading file")
         try:
             wget.download(url, out=file_path)
         except HTTPError:

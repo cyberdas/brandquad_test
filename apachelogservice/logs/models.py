@@ -23,6 +23,7 @@ class Log(models.Model):
         'HTTP Метод', max_length=7, choices=HttpMethods.choices, 
         default=HttpMethods.DEFAULT)
     request_path = models.CharField('Адрес запроса', max_length=200)
+    http_protocol = models.CharField('HTTP протокол', max_length=10)
     response_status_code = models.PositiveIntegerField('Статус ответа сервера')
     content_length = models.PositiveIntegerField('Размер объекта')
     referer = models.URLField('URL исходной страницы', null=True, blank=True) 
