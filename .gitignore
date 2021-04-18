@@ -2,7 +2,8 @@
 .git/*
 env/
 venv/
-myenv
+my_env/
+u_env/
 
 __pycache__/
 *.py[cod]
@@ -15,7 +16,6 @@ __pycache__/
 *.sublime-project
 *.sublime-workspace
 
-access_1.logmm0i773h.tmp
 .env
 db.sqlite3
 *.log

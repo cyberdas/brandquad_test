@@ -22,7 +22,7 @@ class Log(models.Model):
     http_method = models.CharField(
         'HTTP Метод', max_length=7, choices=HttpMethods.choices, 
         default=HttpMethods.DEFAULT)
-    request_path = models.CharField('Адрес запроса', max_length=200)
+    request_path = models.TextField('Адрес запроса', max_length=200)
     http_protocol = models.CharField('HTTP протокол', max_length=10)
     response_status_code = models.PositiveIntegerField('Статус ответа сервера')
     content_length = models.PositiveIntegerField('Размер объекта', null=True, blank=True)

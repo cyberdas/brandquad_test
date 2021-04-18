@@ -65,8 +65,3 @@ class DownloadFile:
         file_path = self.get_file_path(url)
         time = self.download_file(url, file_path)
         return file_path, time
-
-
-if __name__ == "__main__":
-    a = DownloadFile()
-    a('http://www.almhuette-raith.at/apache-log/access.log')

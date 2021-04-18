@@ -60,13 +60,13 @@ WSGI_APPLICATION = 'apachelogservice.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'NAME': 'db.sqlite3'
         #'ENGINE': 'django.db.backends.postgresql',
-        #'NAME': 'logs',
-        #'USER': 'postgres',
-        #'PASSWORD': '4410461200',
-        #'HOST': '',
-        #'PORT': '5432',
+        #'NAME': os.environ.get('POSTGRES_DB'),
+        #'USER': os.environ.get('POSTGRES_USER'),
+        #'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
+        #'HOST': os.environ.get('DB_HOST'),
+        #'PORT': os.environ.get('DB_PORT'),
     }
 }
 
@@ -99,7 +99,7 @@ USE_TZ = True
 
 
 STATIC_URL = '/static/'
-
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 LOGGING = {
     'disable_existing_loggers': True,
