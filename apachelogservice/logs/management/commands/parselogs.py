@@ -30,10 +30,10 @@ class Command(BaseCommand):
         self.stdout.write(self.style.SUCCESS(f'It took {time} seconds'))
         parser = ApacheLogParser()
         parser.parse_all(file_path)
-        # logs saved to db
+        self.stdout.write('Saved log data to DB')
         if options.get('delete'):
             os.remove(file_path)
-            self.stdout.write(self.style.SUCCESS('Deleted log file'))
+            self.stdout.write('Deleted log file')
         #parser = ApacheLogParser()
         #parser.parse_all('D:\Dev\brandquad_test\apachelogservice\logs\logs_dir\access_4.log')
         #parser.parse_all(file_path)

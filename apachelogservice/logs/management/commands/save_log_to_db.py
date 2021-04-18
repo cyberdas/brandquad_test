@@ -15,7 +15,7 @@ logger = getLogger(__name__)
 
 
 class BulkCreateManager:
-    def __init__(self, chunk_size=100):
+    def __init__(self, chunk_size=4000):
         self._create_queues = defaultdict(list)
         self.chunk_size = chunk_size
 
@@ -71,10 +71,6 @@ class ApacheLogParser:
                 content_length = entry.bytes_sent
                 user_agent = entry.headers_in['User-Agent']
                 referer = entry.headers_in['Referer']
-                # user_agent = entry.
-                # remote_user = entry.remote_user
-                # user_agent = 
-                #count += 1
                 bulk_mng.add(Log(
                     ip_address=ip_address,
                     timestamp=timestamp,
@@ -86,7 +82,6 @@ class ApacheLogParser:
                     user_agent=user_agent,
                     referer=referer
                 ))
-            #print(count)
             print(time.time() - t1)
                 #a = line
                 #print(line)

@@ -25,7 +25,7 @@ class Log(models.Model):
     request_path = models.CharField('Адрес запроса', max_length=200)
     http_protocol = models.CharField('HTTP протокол', max_length=10)
     response_status_code = models.PositiveIntegerField('Статус ответа сервера')
-    content_length = models.PositiveIntegerField('Размер объекта')
+    content_length = models.PositiveIntegerField('Размер объекта', null=True, blank=True)
     referer = models.URLField('URL исходной страницы', null=True, blank=True) 
     user_agent = models.TextField('Клиентское приложение', max_length=500, null=True, blank=True)
 
