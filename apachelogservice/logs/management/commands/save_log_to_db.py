@@ -25,7 +25,7 @@ class BulkCreateManager:
         try:
             model_class.objects.bulk_create(self._create_queues[model_key])
         except Exception as e:
-            logger.error(f"Something went wrong while save to DB {e}")
+            logger.error(f'Something went wrong while save to DB {e}')
             raise
         self._create_queues[model_key] = []
 
@@ -54,9 +54,9 @@ class ApacheLogParser:
 
     def parse_all(self, file_path: str):
         t1 = time.time()
-        logger.info("Starting saving file to db")
+        logger.info('Starting saving file to db')
         with open(file_path, 'r') as f:
-            next(f) # первая строка - пустая
+            next(f)  # первая строка - пустая
             bulk_mng = BulkCreateManager()
             for entry in self.parser.parse_lines(f, ignore_invalid=True):
                 ip_address = entry.remote_host
@@ -77,5 +77,5 @@ class ApacheLogParser:
                     user_agent=user_agent,
                     referer=referer
                 ))
-            bulk_mng.done() # удостовериться что все данные добавились в бд
-            logger.info(f"It took {time.time() - t1} seconds")
+            bulk_mng.done()  # удостовериться что все данные добавились в бд
+            logger.info(f'It took {time.time() - t1} seconds')

@@ -1,5 +1,4 @@
 import os
-import requests
 import time
 import wget
 
@@ -47,7 +46,7 @@ class DownloadFile:
         Скачиваем файл и удаляем temp файл при ошибке
         """
         start_time = time.time()
-        logger.info("Downloading file")
+        logger.info('Downloading file')
         try:
             wget.download(url, out=file_path)
         except HTTPError:
@@ -56,7 +55,7 @@ class DownloadFile:
             raise CommandError(f'Something went wrong, cant download log from url - {e}')
         finally:  # сталкивался с тем, что wget после работы оставлял .tmp file
             for item in os.listdir(self.save_path):
-                if item.endswith(".tmp"):
+                if item.endswith('.tmp'):
                     os.remove(os.path.join(self.save_path, item))
         end_time = time.time() - start_time
         return end_time

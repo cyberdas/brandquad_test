@@ -1,7 +1,6 @@
 from django.core.exceptions import ValidationError
 from django.core.validators import URLValidator
-from django.core.management.base import BaseCommand, CommandError
-
+from django.core.management.base import CommandError
 
 
 class GivenUrlValidator:
@@ -12,7 +11,7 @@ class GivenUrlValidator:
         validator = URLValidator()
         try:
             validator(passed_url)
-        except ValidationError as e:
-            raise CommandError(f'Given URL is not valid, {e}')
+        except ValidationError:
+            raise CommandError('Given URL is not valid')
         else:
             return passed_url
