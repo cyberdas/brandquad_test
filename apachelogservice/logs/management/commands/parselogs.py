@@ -20,6 +20,7 @@ class Command(BaseCommand):
         passed_url = options.get('url')
         url = self.validate_url(passed_url)
         time = self.parse_and_load_to_db(url)
+        print(time)
         self.stdout.write(self.style.SUCCESS(f'Saved logs to DB, it took {time} seconds'))
 
     def validate_url(self, passed_url: str) -> str:
