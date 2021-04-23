@@ -39,3 +39,5 @@ class Log(models.Model):
         return f'{self.ip_address} [{self.timestamp}] ' \
                f'"{self.http_method} {self.request_path}" \
                {self.response_status_code} {self.content_length}'
+
+    # метод для bulk_manager?

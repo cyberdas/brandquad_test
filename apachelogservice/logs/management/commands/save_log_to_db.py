@@ -27,9 +27,9 @@ class BulkCreateManager:
         except Exception as e:
             logger.error(f'Something went wrong while save to DB {e}')
             raise
-        #self._create_queues[model_key] = []
+        self._create_queues[model_key] = []
 
-    # def add(self, obj):
+    def add(self, obj):
         """
         Добавить объект в очередь для добавления
         """

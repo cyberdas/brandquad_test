@@ -47,4 +47,4 @@ class LogParserTest(TestCase):
 
     def test_parselogs(self):
         out = self.log_call_command()
-        self.assertIn('Saved log data to DB', out)
+        self.assertIn('Saved logs to DB', out)
