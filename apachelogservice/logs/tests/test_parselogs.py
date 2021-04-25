@@ -23,11 +23,6 @@ class SimpleLogParserTest(SimpleTestCase):
         result = Command().validate_url(self.url)
         self.assertEqual(result, self.url)
 
-    def test_download_fail(self):
-        with self.assertRaises(CommandError, msg='HTTP Error 404: Not Found'):
-            logging.disable(logging.CRITICAL)
-            Command().download_file(self.invalid_download)
-
 
 class LogParserTest(TestCase):
 

@@ -1,16 +1,17 @@
 import time
 import requests
-import tqdm
+from tqdm import tqdm
 from collections import defaultdict
 
-from apachelogs import LogParser
+from apachelogs import LogParser, InvalidEntryError
 from django.apps import apps
 from logging import getLogger
 
 from logs.models import Log
 
 
-# logger = getLogger(__name__)
+logger = getLogger(__name__)
+
 
 class BulkCreateManager:
     """
@@ -54,59 +55,41 @@ class ApacheLogParser:
     def __init__(self):
         self.parser = LogParser('%h %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\" \"%{Data}i\"')
 
-    def test(self, url):
+    def parse_logs(self, url: str):
         bulk_mng = BulkCreateManager()
         with requests.get(url, stream=True) as r: # итеруемся по объекту ответа
-            # content_length = 66246212
-            # r.raise_for_status()
-            # chunk_size - байты
-            # for line in generator
-            for line in r.iter_lines(decode_unicode=True): # загружаем ответ в память не целиком
+            r.raise_for_status()
+            for line in tqdm(r.iter_lines(decode_unicode=True), unit='logs', desc="Parsing logs"): # загружаем ответ в память не целиком
                 if line:
-                    entry = self.parser.parse(line)
-                    ip_address = entry.remote_host
-                    timestamp = entry.request_time
-                    response_status_code = entry.final_status
-                    http_method, request_path, http_protocol = entry.request_line.split()
-                    content_length = entry.bytes_sent
-                    user_agent = entry.headers_in['User-Agent']
-                    referer = entry.headers_in['Referer']
-                #for entry in self.parser.parse_lines(line, ignore_invalid=False):
-                #    ip_address = entry.remote_host
-                #    timestamp = entry.request_time
-                #    response_status_code = entry.final_status
-                #    http_method, request_path, http_protocol = entry.request_line.split()
-                #    content_length = entry.bytes_sent
-                #    user_agent = entry.headers_in['User-Agent']
-                #    referer = entry.headers_in['Referer']
-                    bulk_mng.add(Log(
-                        ip_address=ip_address,
-                        timestamp=timestamp,
-                        response_status_code=response_status_code,
-                        http_method=http_method,
-                        request_path=request_path,
-                        http_protocol=http_protocol,
-                        content_length=content_length,
-                        user_agent=user_agent,
-                        referer=referer
-                    ))
+                    try:
+                        entry = self.parser.parse(line)
+                    except InvalidEntryError: # пропускаем не распарсенные данные
+                        logger.error(f'Could not parse line from log')
+                        continue
+                    else:
+                        ip_address = entry.remote_host
+                        timestamp = entry.request_time
+                        response_status_code = entry.final_status
+                        http_method, request_path, http_protocol = entry.request_line.split()
+                        content_length = entry.bytes_sent
+                        user_agent = entry.headers_in['User-Agent']
+                        referer = entry.headers_in['Referer']
+                        bulk_mng.add(Log(
+                            ip_address=ip_address,
+                            timestamp=timestamp,
+                            response_status_code=response_status_code,
+                            http_method=http_method,
+                            request_path=request_path,
+                            http_protocol=http_protocol,
+                            content_length=content_length,
+                            user_agent=user_agent,
+                            referer=referer
+                        ))
             bulk_mng.done()
 
 
     def parse_all(self, url: str):
-        #logger.info()
+        logger.info("Started parsing logs")
         start_time = time.time()
-        self.test(url)
-        end_time = time.time()
-        return end_time - start_time
-
-#
-# класс Bulk create manager добавить метод в модель?
-# строка с процессов tqdm
-# логировать could not parse line {}, it is not saved to db
-# started parsing {url}
-#
-
-if __name__ == '__main__':
-    a = ApacheLogParser()
-    a.parse_all('http://www.almhuette-raith.at/apache-log/access.log')
+        self.parse_logs(url)
+        return time.time() - start_time
